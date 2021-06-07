@@ -5,13 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block Counter Matic ( Polygon )</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.5/web3.min.js"
         integrity="sha512-S/O+gH5szs/+/dUylm15Jp/JZJsIoWlpSVMwT6yAS4Rh7kazaRUxSzFBwnqE2/jBphcr7xovTQJaopiEZAzi+A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
+    <h1 id="block"></h1>
     <h1 id="time"></h1>
     <form method="get">
         <label for="fname">target block:</label>
@@ -33,56 +36,47 @@
     let target_block = 0;
 
     let searchParams = new URLSearchParams(window.location.search)
-    if(searchParams.has('block')){
-        target_block  = searchParams.get('block');
+    if (searchParams.has('block')) {
+        target_block = searchParams.get('block');
     }
-
 
     let keep = [];
 
-    if(target_block != 0){
-
+    if (target_block != 0) {
         setInterval(() => {
             web3.eth.getBlockNumber()
-            .then((current_block) => {
+                .then((current_block) => {
 
-                let remain_block = target_block - current_block;
-                document.title = remain_block + "-Block Remains ( Matic )";
+                    let remain_block = target_block - current_block;
+                    document.title = remain_block + "-Block Remains ( Matic )";
 
-                keep.push(current_block);
-                if (keep.length > 1000) {
-                    keep = keep.slice(1);
-                }
+                    keep.push(current_block);
+                    if (keep.length > 1000) {
+                        keep = keep.slice(1);
+                    }
 
-                let dur_per_block = 0;
-                // console.log(keep);
-                // console.log(keep.min());
-                // console.log(keep.max());
-                // console.log(keep.max()-keep.min());
-                if(keep.length > 10){
-                    dur_per_block = keep.length / (keep.max() - keep.min());
-                } else  {
-                    dur_per_block = 2.1;
-                }
+                    let dur_per_block = 2.1;
+                    if (keep.length > 10) {
+                        dur_per_block = keep.length / (keep.max() - keep.min());
+                    }
 
-                let t_s = remain_block * dur_per_block;
+                    let t_s = remain_block * dur_per_block;
 
-                console.log("dur_per_block:",dur_per_block);
+                    console.log("dur_per_block:", dur_per_block);
 
-                let t_m = parseInt(t_s / 60.0);
-                let t_h = parseInt(t_m / 60.0);
-                let t_d = parseInt(t_h / 24.0);
+                    let t_m = parseInt(t_s / 60.0);
+                    let t_h = parseInt(t_m / 60.0);
+                    let t_d = parseInt(t_h / 24.0);
 
-                t_s = parseInt(t_s % 60);
-                t_m = parseInt(t_m % 60);
-                t_h = parseInt(t_h % 24);
+                    t_s = parseInt(t_s % 60);
+                    t_m = parseInt(t_m % 60);
+                    t_h = parseInt(t_h % 24);
 
-                let time_text = `in ${t_d} days ${t_h} hours ${t_m} minutes ${t_s} seconds : ${remain_block} blocks remaining`;
-                // console.log(time_text);
-                document.getElementById("time").innerHTML = time_text;
-            });
+                    document.getElementById("time").innerHTML = `in ${t_d} days ${t_h} hours ${t_m} minutes ${t_s} seconds`;
+                    document.getElementById("block").innerHTML = `${remain_block} blocks remaining`;
+                });
         }, 1000)
     }
-    </script>
+</script>
 
 </html>
